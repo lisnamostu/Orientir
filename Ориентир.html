@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⫷ Ориентир ⫸</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        /* Задний фон */
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 30%, #f9f3e8, #ede4d6);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .app {
+            max-width: 1424px;
+            width: 100%;
+            display: flex;
+            gap: 1.8rem;
+            align-items: stretch;
+        }
+
+        /* ---------------------------------------------------------------------------------------------------- */
+        /* ---------------------------------------------------------------------------------------------------- */
+        /* ——— сайдбар ——— ------------------------------------------------------------------------------------ */
+        /* ---------------------------------------------------------------------------------------------------- */
+        /* ---------------------------------------------------------------------------------------------------- */
+        .sidebar {
+            width: 504px;
+            flex-shrink: 0;
+            background: rgba(255, 250, 240, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 1.5rem 1rem;
+            border: 1px solid rgba(255, 245, 230, 0.5);
+            box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.12);
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* ------ */
+        .sidebar-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px dashed #d9cdbc;
+            margin-bottom: 1.2rem;
+        }
+        
+        /* Вкладка: Повс. Обяз. Важн. Глав. */
+        .sidebar-tab {
+            flex: 1 1 calc(50% - 0.15rem);
+            border: 1px solid transparent;
+            background: rgba(200, 180, 162, 0.12);
+            color: #5f4d3d;
+            font-size: 0.85rem;
+            padding: 0.5rem 0.4rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            white-space: nowrap;
+        }
+
+        /* (3) */
+        .sidebar-tab span {
+            background: #d9cdbc;
+            font-size: 0.7rem;
+            padding: 0.05rem 0.55rem;
+            border-radius: 40px;
+            font-weight: 400;
+        }
+
+        /* Ховер вкладки */
+        .sidebar-tab:hover {
+            background: rgba(200, 180, 162, 0.25);
+        }
+
+        /* Активная вкладка */
+        .sidebar-tab.active {
+            background: #fffbf5;
+            border-color: #b7a18b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            font-weight: 500;
+            color: #3d2e26;
+        }
+
+        /* Список блоков дел */
+        .block-list {
+            list-style: none;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 0.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        
+        /* Слайдер для прокрутки; его вся линия; его курсор */
+        .block-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .block-list::-webkit-scrollbar-track {
+            background: #eee5d9;
+            border-radius: 20px;
+        }
+        .block-list::-webkit-scrollbar-thumb {
+            background: #cbb9a6;
+            border-radius: 20px;
+        }
+        
+        /* Блок дел */
+        .block-list li {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            padding: 0.5rem 0.6rem 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.15s;
+            background: rgba(255, 248, 238, 0.3);
+            border: 1px solid transparent;
+            color: #3d2e26;
+            word-break: break-word;
+        }
+        
+        /* Ховер блока дел */
+        .block-list li:hover {
+            background: rgba(255, 248, 238, 0.7);
+            border-color: #dacbbc;
+        }
+
+        /* Активный блок дел*/
+        .block-list li.active {
+            background: #fffbf5;
+            border-color: #b7a18b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            font-weight: 500;
+        }
+
+        /* Горизонтальный список объектов на блоке дел (невидимо) */
+        .block-list li .block-row {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            width: 100%;
+        }
+
+        /* Название блока дел (невидимо) */
+        .block-list li .block-name {
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+            font-size: 0.95rem;
+            background: transparent;
+            border: none;
+            border-bottom: 1.5px dashed transparent;
+            padding: 0.1rem 0.2rem;
+            outline: none;
+            color: #3d2e26;
+            font-weight: inherit;
+            transition: 0.15s;
+        }
+
+        /* Строка изменения названия блока дел */
+        .block-list li .block-name:focus {
+            border-bottom-color: #b7a18b; /* Подчёркивание */
+            background: rgba(255, 250, 240, 0.3);
+            border-radius: 4px 4px 0 0;
+        }
+        /* Если строка ввода пустая пишет "Название блока" */
+        .block-list li .block-name::placeholder {
+            color: #b4a392;
+            font-weight: 300;
+        }
+
+        /* Дата около стрелочек */
+        .block-list li .block-date {
+            font-size: 0.7rem;
+            color: #8a7a6b;
+            background: rgba(200, 180, 162, 0.15);
+            padding: 0.05rem 0.6rem;
+            border-radius: 30px;
+            white-space: nowrap;
+            margin-left: 0.2rem;
+        }
+
+        /* Органайзер блоков дел (невидимо) */
+        .block-list li .block-controls {
+            display: flex;
+            gap: 0.1rem;
+            flex-shrink: 0;
+            align-items: center;
+        }
+
+        /* Стрелочки, дублировать, удалить*/
+        .block-list li .block-controls button {
+            background: transparent;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5f4d3d;
+            transition: 0.15s;
+            background: rgba(200, 180, 162, 0.05);
+        }
+
+        /* Ховер для стрелочек; ховер для удаления; ховер для дублирования*/
+        .block-list li .block-controls button:hover {
+            background: #d9cdbc;
+        }
+        .block-list li .block-controls .del-block-btn:hover {
+            background: #f3e0d6;
+            color: #b1513a;
+        }
+        .block-list li .block-controls .dup-block-btn:hover {
+            background: #d4e0d4;
+            color: #2f6b3a;
+        }
+
+        /* Выбор даты для блоков дел*/
+        .block-list li .date-picker-row {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding-left: 0.2rem;
+            margin-top: 0.1rem;
+        }
+
+        /* Поле ввода даты для блоков дел */
+        .block-list li .date-picker-row input[type="date"] {
+            border: 1px solid #ddd0be;
+            border-radius: 30px;
+            padding: 0.15rem 0.6rem;
+            font-size: 0.7rem;
+            background: rgba(255, 250, 240, 0.5);
+            color: #3d2e26;
+            outline: none;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 130px;
+        }
+        /* Когда вводит дату */
+        .block-list li .date-picker-row input[type="date"]:focus {
+            border-color: #b7a18b;
+            background: #fffcf5;
+        }
+
+        /* Добавление нового блока дел; его поле ввода; при использовании поля ввода; */
+        /* Кнопка "добавить"; ховер кнопки */
+        .sidebar-footer {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.4rem;
+        }
+        .sidebar-footer input {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: 1.5px solid #ddd0be;
+            border-radius: 60px;
+            background: rgba(255, 250, 240, 0.6);
+            font-size: 0.85rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .sidebar-footer input:focus {
+            border-color: #b7a18b;
+            background: #fffcf5;
+        }
+        .sidebar-footer button {
+            background: #3d2e26;
+            border: none;
+            color: #fcf3e8;
+            font-size: 1.3rem;
+            width: 44px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+        .sidebar-footer button:hover {
+            background: #2f241e;
+            transform: scale(0.95);
+        }
+
+        /* ---------------------------------------------------------------------------------------------------- */
+        /* ---------------------------------------------------------------------------------------------------- */
+        /* ——— основная карточка ——— -------------------------------------------------------------------------- */
+        /* ---------------------------------------------------------------------------------------------------- */
+        /* ---------------------------------------------------------------------------------------------------- */
+        .main-card {
+            flex: 1;
+            background: rgba(255, 250, 240, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 48px 48px 40px 40px;
+            padding: 2rem 2rem 2.2rem;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 245, 230, 0.5);
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* -------- */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed #d9cdbc;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .main-header h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            color: #3d2e26;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .main-header h1 span {
+            background: #d9cdbc;
+            font-size: 0.9rem;
+            font-weight: 400;
+            padding: 0.1rem 1rem;
+            border-radius: 40px;
+        }
+
+        /* Изменение названия блока дел; его использование; значение если ввод пустой */
+        .main-header .block-title-edit {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #3d2e26;
+            background: transparent;
+            border: none;
+            border-bottom: 2px dashed transparent;
+            padding: 0.2rem 0.6rem;
+            min-width: 120px;
+            outline: none;
+            transition: 0.2s;
+            flex: 1;
+        }
+        .main-header .block-title-edit:focus {
+            border-bottom-color: #b7a18b;
+            background: rgba(255, 250, 240, 0.4);
+            border-radius: 8px 8px 0 0;
+        }
+        .main-header .block-title-edit::placeholder {
+            color: #b4a392;
+            font-weight: 300;
+        }
+
+        /* Список дел (невидимо) */
+        .task-list {
+            list-style: none;
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            padding-right: 0.2rem;
+        }
+
+        /* Слайдер для прокрутки; его вся линия; его курсор */
+        .task-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .task-list::-webkit-scrollbar-track {
+            background: #eee5d9;
+            border-radius: 20px;
+        }
+        .task-list::-webkit-scrollbar-thumb {
+            background: #cbb9a6;
+            border-radius: 20px;
+        }
+
+        /* Задача; её ховер */
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 248, 238, 0.5);
+            padding: 0.6rem 1rem 0.6rem 1.4rem;
+            border-radius: 60px;
+            border: 1px solid rgba(235, 222, 208, 0.4);
+            transition: 0.15s;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .task-item:hover {
+            background: #fffbf5;
+            border-color: #dacbbc;
+        }
+
+        .task-item .task-main {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 150px;
+            flex-wrap: wrap;
+        }
+
+        /* Название задачи; когда выполнена */
+        .task-item .task-text {
+            font-size: 0.95rem;
+            color: #2b211c;
+            word-break: break-word;
+        }
+        .task-item .task-text.done {
+            text-decoration: line-through;
+            opacity: 0.5;
+            color: #5f4d3d;
+        }
+
+        .task-item .task-time-info {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            color: #6b5b4e;
+            flex-wrap: wrap;
+        }
+
+        /* Ввод времени задачи; его фокус при письме значения */
+        .task-item .task-time-info input[type="time"] {
+            border: 1px solid #ddd0be;
+            border-radius: 30px;
+            padding: 0.1rem 0.4rem;
+            font-size: 0.7rem;
+            background: rgba(255, 250, 240, 0.4);
+            color: #3d2e26;
+            outline: none;
+            width: 85px;
+            transition: 0.2s;
+        }
+        .task-item .task-time-info input[type="time"]:focus {
+            border-color: #b7a18b;
+            background: #fffcf5;
+        }
+
+        /* Ввод длительности задачи; его фокус при письме значения */
+        .task-item .task-time-info input[type="number"] {
+            border: 1px solid #ddd0be;
+            border-radius: 30px;
+            padding: 0.1rem 0.3rem;
+            font-size: 0.7rem;
+            background: rgba(255, 250, 240, 0.4);
+            color: #3d2e26;
+            outline: none;
+            width: 60px;
+            transition: 0.2s;
+        }
+        .task-item .task-time-info input[type="number"]:focus {
+            border-color: #b7a18b;
+            background: #fffcf5;
+        }
+
+        /* "мин" */
+        .task-item .task-time-info .duration-label {
+            font-size: 0.65rem;
+            color: #8a7a6b;
+        }
+
+        /* Расчитанное время окончания задачи */
+        .task-item .task-end-time {
+            font-size: 0.75rem;
+            color: #4b3c31;
+            background: rgba(200, 180, 162, 0.3);
+            padding: 0.15rem 0.7rem;
+            border-radius: 30px;
+            white-space: nowrap;
+            font-weight: 500;
+            align-self: center;
+        }
+
+        /* Ряд кнопок; кнопка взаимодествия с задачами; ховер кнопки удаления; */
+        /* Кнопка отметки; ховер кнопки отметки; отмеченная кнопка отметки; кнопка движения; ховер кнопки движения */
+        .task-actions {
+            display: flex;
+            gap: 0.1rem;
+            flex-shrink: 0;
+            align-items: center;
+        }
+        .task-actions button {
+            background: transparent;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 40px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5f4d3d;
+            background: rgba(200, 180, 162, 0.05);
+            transition: 0.15s;
+        }
+        .task-actions .delete-task-btn:hover {
+            background: #f3e0d6;
+            color: #b1513a;
+        }
+        .task-actions .check-btn {
+            font-size: 1.15rem;
+        }
+        .task-actions .check-btn:hover {
+            background: #d9cdbc;
+            color: #2f6b3a;
+        }
+        .task-actions .check-btn.checked {
+            color: #2f6b3a;
+        }
+        .task-actions .move-btn {
+            font-size: 0.9rem;
+        }
+        .task-actions .move-btn:hover {
+            background: #d9cdbc;
+        }
+
+        /* Строка добавления задачи; ввод названия задачи; фокус ввода названия; */
+        /* Ввод времени задачи; фокус ввода времени; ввод длительности задачи; фокус ввода длительности; */
+        /* Кнопка добавления; ховер кнопки добавления */
+        .add-task-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid #e1d4c4;
+            flex-wrap: wrap;
+        }
+        .add-task-row input[type="text"] {
+            flex: 2;
+            min-width: 120px;
+            padding: 0.7rem 1.2rem;
+            border: 1.5px solid #ddd0be;
+            border-radius: 60px;
+            background: rgba(255, 250, 240, 0.5);
+            font-size: 0.95rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .add-task-row input[type="text"]:focus {
+            border-color: #b7a18b;
+            background: #fffcf5;
+        }
+        .add-task-row input[type="time"] {
+            width: 110px;
+            padding: 0.7rem 0.8rem;
+            border: 1.5px solid #ddd0be;
+            border-radius: 60px;
+            background: rgba(255, 250, 240, 0.5);
+            font-size: 0.85rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .add-task-row input[type="time"]:focus {
+            border-color: #b7a18b;
+            background: #fffcf5;
+        }
+        .add-task-row input[type="number"] {
+            width: 80px;
+            padding: 0.7rem 0.8rem;
+            border: 1.5px solid #ddd0be;
+            border-radius: 60px;
+            background: rgba(255, 250, 240, 0.5);
+            font-size: 0.85rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .add-task-row input[type="number"]:focus {
+            border-color: #b7a18b;
+            background: #fffcf5;
+        }
+        .add-task-row button {
+            background: #3d2e26;
+            border: none;
+            color: #fcf3e8;
+            font-size: 1.4rem;
+            padding: 0 1.2rem;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .add-task-row button:hover {
+            background: #2f241e;
+            transform: scale(0.95);
+        }
+
+        /* Если ввод названия задачи пустой */
+        .empty-message {
+            text-align: center;
+            color: #ab9887;
+            font-size: 1rem;
+            padding: 2.5rem 0;
+            font-weight: 300;
+            background: rgba(235, 222, 208, 0.1);
+            border-radius: 40px;
+        }
+
+        /* Подсказки снизу; "Редактируй названия прямо в сайдбаре"; "автосохранение" */
+        .footer-note {
+            margin-top: 1.2rem;
+            font-size: 0.8rem;
+            color: #b7a494;
+            text-align: right;
+            border-top: 1px solid #e1d4c4;
+            padding-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .footer-note span {
+            margin-left: 0.6rem;
+        }
+        .footer-note i {
+            background: #e7dbce;
+            padding: 0.1rem 0.8rem;
+            border-radius: 40px;
+            color: #4b3c31;
+            font-style: normal;
+        }
+
+        /* Кнопка "стереть галочки"; её ховер */
+        .reset-checks-btn {
+            background: rgba(200, 180, 162, 0.15);
+            border: 1px solid #ddd0be;
+            color: #5f4d3d;
+            font-size: 0.75rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.15s;
+            white-space: nowrap;
+        }
+        .reset-checks-btn:hover {
+            background: #d4e0d4;
+            border-color: #b7a18b;
+            color: #2f6b3a;
+        }
+
+        @media (max-width: 800px) {
+            .app { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                max-height: 200px;
+                flex-shrink: 0;
+            }
+            .main-card { max-height: none; }
+            .task-item { flex-direction: column; align-items: stretch; }
+            .task-item .task-main { flex-wrap: wrap; }
+            .add-task-row { flex-direction: column; }
+            .add-task-row input { width: 100% !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- САЙДБАР -->
+    <aside class="sidebar">
+        <div class="sidebar-tabs">
+            <button type="button" class="sidebar-tab active" data-tab="daily">📂 Повседневные <span>0</span></button>
+            <button type="button" class="sidebar-tab" data-tab="required">📌 Обязательные <span>0</span></button>
+            <button type="button" class="sidebar-tab" data-tab="important">❗ Важные <span>0</span></button>
+            <button type="button" class="sidebar-tab" data-tab="main">⭐ Главные <span>0</span></button>
+        </div>
+        <ul class="block-list" id="blockList"></ul>
+        <div class="sidebar-footer">
+            <input type="text" id="newBlockInput" placeholder="новый блок…">
+            <button type="button" id="addBlockBtn">+</button>
+        </div>
+    </aside>
+
+    <!-- ОСНОВНАЯ ОБЛАСТЬ -->
+    <main class="main-card">
+        <div class="main-header">
+            <h1>📋 <span id="blockTitleDisplay">выбери блок</span></h1>
+            <input type="text" class="block-title-edit" id="blockTitleEdit" placeholder="название блока…" style="display:none;">
+        </div>
+
+        <ul class="task-list" id="taskList">
+            <li class="empty-message">✦ выбери блок из списка слева</li>
+        </ul>
+
+        <div class="add-task-row" id="addTaskRow" style="display:none;">
+            <input type="text" id="taskInput" placeholder="новая задача…">
+            <input type="time" id="taskTimeInput" value="09:00">
+            <input type="number" id="taskDurationInput" placeholder="мин" min="0" step="5">
+            <button type="button" id="addTaskBtn">+</button>
+        </div>
+
+        <div class="footer-note">
+            <button type="button" id="resetChecksBtn" class="reset-checks-btn">↺ сбросить галочки</button>
+            <span><i>💾 автосохранение</i><span>✎ редактируй названия прямо в сайдбаре</span></span>
+        </div>
+    </main>
+</div>
+
+<script>
+    (function() {
+        const STORAGE_KEY = 'todo_blocks_sidebar_v7';
+
+        // Блок: { id, title, date, category: 'daily'|'main', tasks: [ { id, text, done, time, duration } ] }
+        let blocks = [];
+        let activeBlockId = null;
+        let activeTab = 'daily';
+
+        // Нахождение елементов
+        const blockListEl = document.getElementById('blockList');
+        const tabButtons = document.querySelectorAll('.sidebar-tab');
+        const newBlockInput = document.getElementById('newBlockInput');
+        const addBlockBtn = document.getElementById('addBlockBtn');
+
+        const taskListEl = document.getElementById('taskList');
+        const taskInput = document.getElementById('taskInput');
+        const taskTimeInput = document.getElementById('taskTimeInput');
+        const taskDurationInput = document.getElementById('taskDurationInput');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const addTaskRow = document.getElementById('addTaskRow');
+        const blockTitleDisplay = document.getElementById('blockTitleDisplay');
+        const blockTitleEdit = document.getElementById('blockTitleEdit');
+        const resetChecksBtn = document.getElementById('resetChecksBtn');
+
+        // ——— загрузка ———
+        function loadData() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length) {
+                        blocks = parsed;
+                        blocks.forEach(b => {
+                            if (!b.category) b.category = 'daily';
+                            if (Array.isArray(b.tasks)) b.tasks = sortTasksByTime(b.tasks);
+                        });
+                        return;
+                    }
+                } catch (e) {}
+            }
+            const today = new Date().toISOString().split('T')[0];
+            blocks = [
+                { id: Date.now() + 1, title: 'Планы на неделю', date: today, tasks: [ { id: Date.now() + 10, text: 'спланировать задачи', done: false, time: '09:00', duration: 30 } ] },
+                { id: Date.now() + 2, title: 'Важные дела', date: today, tasks: [ { id: Date.now() + 20, text: 'написать код', done: false, time: '10:00', duration: 60 } ] },
+                { id: Date.now() + 3, title: 'Встречи', date: today, tasks: [ { id: Date.now() + 30, text: 'команда', done: false, time: '14:30', duration: 45 } ] }
+            ];
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(blocks));
+        }
+
+        function generateId() {
+            return Date.now() + Math.floor(Math.random() * 10000);
+        }
+
+        // ——— расчёт времени окончания ———
+        function computeEndTime(timeStr, duration) {
+            if (!timeStr || !duration) return null;
+            const [h, m] = timeStr.split(':').map(Number);
+            if (isNaN(h) || isNaN(m)) return null;
+            const total = h * 60 + m + Number(duration);
+            const eh = Math.floor(total / 60) % 24;
+            const em = total % 60;
+            return `${String(eh).padStart(2, '0')}:${String(em).padStart(2, '0')}`;
+        }
+
+        // ——— сортировка задач: по времени начала, выполненные уходят вниз ———
+        function sortTasksByTime(tasks) {
+            const activeTimed = tasks.filter(t => !t.done && t.time).sort((a, b) => a.time.localeCompare(b.time));
+            const activeUntimed = tasks.filter(t => !t.done && !t.time);
+            const doneTimed = tasks.filter(t => t.done && t.time).sort((a, b) => a.time.localeCompare(b.time));
+            const doneUntimed = tasks.filter(t => t.done && !t.time);
+            return activeTimed.concat(activeUntimed, doneTimed, doneUntimed);
+        }
+
+        function getActiveBlock() {
+            return blocks.find(b => b.id === activeBlockId) || null;
+        }
+
+        function currentBlocks() {
+            return blocks.filter(b => (b.category || 'daily') === activeTab);
+        }
+
+        // ——— рендер сайдбара ———
+        function renderSidebar() {
+            const list = currentBlocks();
+            blockListEl.innerHTML = '';
+            tabButtons.forEach(btn => {
+                const cat = btn.dataset.tab;
+                btn.querySelector('span').textContent = blocks.filter(b => (b.category || 'daily') === cat).length;
+                btn.classList.toggle('active', cat === activeTab);
+            });
+
+            if (list.length === 0) {
+                const li = document.createElement('li');
+                li.style.color = '#ab9887';
+                li.style.justifyContent = 'center';
+                li.textContent = '✎ нет блоков';
+                blockListEl.appendChild(li);
+                return;
+            }
+
+            list.forEach((block) => {
+                const li = document.createElement('li');
+                if (block.id === activeBlockId) li.classList.add('active');
+
+                // основная строка
+                const row = document.createElement('div');
+                row.className = 'block-row';
+
+                // поле ввода названия (редактируемое прямо в сайдбаре)
+                const nameInput = document.createElement('input');
+                nameInput.className = 'block-name';
+                nameInput.type = 'text';
+                nameInput.value = block.title || '';
+                nameInput.placeholder = 'Название блока';
+                nameInput.addEventListener('input', (e) => {
+                    block.title = e.target.value.trim() || 'Без названия';
+                    saveData();
+                    // обновляем заголовок в основной области, если этот блок активен
+                    if (block.id === activeBlockId) {
+                        blockTitleEdit.value = block.title;
+                    }
+                });
+                nameInput.addEventListener('click', (e) => e.stopPropagation());
+
+                const dateSpan = document.createElement('span');
+                dateSpan.className = 'block-date';
+                dateSpan.textContent = block.date ? block.date : '—';
+
+                const controls = document.createElement('div');
+                controls.className = 'block-controls';
+
+                const upBtn = document.createElement('button');
+                upBtn.textContent = '↑';
+                upBtn.title = 'Вверх';
+                upBtn.addEventListener('click', (e) => { e.stopPropagation(); moveBlock(block, -1); });
+
+                const downBtn = document.createElement('button');
+                downBtn.textContent = '↓';
+                downBtn.title = 'Вниз';
+                downBtn.addEventListener('click', (e) => { e.stopPropagation(); moveBlock(block, 1); });
+
+                const dupBtn = document.createElement('button');
+                dupBtn.className = 'dup-block-btn';
+                dupBtn.textContent = '⧉';
+                dupBtn.title = 'Дублировать блок';
+                dupBtn.addEventListener('click', (e) => { e.stopPropagation(); duplicateBlock(block.id); });
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'del-block-btn';
+                delBtn.textContent = '✕';
+                delBtn.title = 'Удалить блок';
+                delBtn.addEventListener('click', (e) => { e.stopPropagation(); deleteBlock(block.id); });
+
+                controls.appendChild(upBtn);
+                controls.appendChild(downBtn);
+                controls.appendChild(dupBtn);
+                controls.appendChild(delBtn);
+
+                row.appendChild(nameInput);
+                row.appendChild(dateSpan);
+                row.appendChild(controls);
+
+                // строка выбора даты
+                const dateRow = document.createElement('div');
+                dateRow.className = 'date-picker-row';
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.value = block.date || '';
+                dateInput.addEventListener('change', (e) => {
+                    block.date = e.target.value || null;
+                    saveData();
+                    renderSidebar();
+                });
+                dateInput.addEventListener('click', (e) => e.stopPropagation());
+                dateRow.appendChild(dateInput);
+
+                li.appendChild(row);
+                li.appendChild(dateRow);
+
+                li.addEventListener('click', () => {
+                    setActiveBlock(block.id);
+                });
+
+                blockListEl.appendChild(li);
+            });
+        }
+
+        // ——— рендер задач активного блока ———
+        function renderTasks() {
+            const block = getActiveBlock();
+            if (!block) {
+                taskListEl.innerHTML = '<li class="empty-message">✦ выбери блок из списка слева</li>';
+                blockTitleDisplay.textContent = 'выбери блок';
+                blockTitleEdit.style.display = 'none';
+                blockTitleDisplay.style.display = 'inline';
+                addTaskRow.style.display = 'none';
+                return;
+            }
+
+            addTaskRow.style.display = 'flex';
+
+            blockTitleDisplay.style.display = 'none';
+            blockTitleEdit.style.display = 'inline-block';
+            blockTitleEdit.value = block.title || '';
+            blockTitleEdit.placeholder = 'Название блока';
+
+            taskListEl.innerHTML = '';
+            if (!block.tasks || block.tasks.length === 0) {
+                taskListEl.innerHTML = '<li class="empty-message">✦ задач пока нет</li>';
+                return;
+            }
+
+            block.tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.className = 'task-item';
+
+                const mainDiv = document.createElement('div');
+                mainDiv.className = 'task-main';
+
+                const textSpan = document.createElement('span');
+                textSpan.className = 'task-text';
+                if (task.done) textSpan.classList.add('done');
+                textSpan.textContent = task.text;
+
+                // время и продолжительность
+                const timeInfo = document.createElement('div');
+                timeInfo.className = 'task-time-info';
+
+                const timeInput = document.createElement('input');
+                timeInput.type = 'time';
+                timeInput.value = task.time || '09:00';
+                timeInput.addEventListener('change', (e) => {
+                    task.time = e.target.value || null;
+                    block.tasks = sortTasksByTime(block.tasks);
+                    saveData();
+                    renderTasks();
+                });
+
+                const durInput = document.createElement('input');
+                durInput.type = 'number';
+                durInput.placeholder = 'мин';
+                durInput.min = 0;
+                durInput.step = 5;
+                durInput.value = task.duration || '';
+                durInput.style.width = '60px';
+                durInput.addEventListener('change', (e) => {
+                    const val = parseInt(e.target.value);
+                    task.duration = isNaN(val) ? null : val;
+                    saveData();
+                    updateEndTime();
+                });
+
+                const durLabel = document.createElement('span');
+                durLabel.className = 'duration-label';
+                durLabel.textContent = 'мин';
+
+                // метка с расчётным временем окончания
+                const endTimeSpan = document.createElement('span');
+                endTimeSpan.className = 'task-end-time';
+                function updateEndTime() {
+                    const end = computeEndTime(timeInput.value, task.duration);
+                    endTimeSpan.textContent = end ? `→ до ${end}` : '';
+                }
+                updateEndTime();
+
+                timeInfo.appendChild(timeInput);
+                timeInfo.appendChild(durInput);
+                timeInfo.appendChild(durLabel);
+
+                mainDiv.appendChild(textSpan);
+                mainDiv.appendChild(timeInfo);
+
+                const actions = document.createElement('div');
+                actions.className = 'task-actions';
+
+                const checkBtn = document.createElement('button');
+                checkBtn.className = `check-btn ${task.done ? 'checked' : ''}`;
+                checkBtn.textContent = task.done ? '✓' : '○';
+                checkBtn.addEventListener('click', () => {
+                    task.done = !task.done;
+                    block.tasks = sortTasksByTime(block.tasks);
+                    renderTasks();
+                    saveData();
+                });
+
+                const upBtn = document.createElement('button');
+                upBtn.className = 'move-btn';
+                upBtn.textContent = '↑';
+                upBtn.title = 'Вверх';
+                upBtn.addEventListener('click', () => moveTask(block.id, index, -1));
+
+                const downBtn = document.createElement('button');
+                downBtn.className = 'move-btn';
+                downBtn.textContent = '↓';
+                downBtn.title = 'Вниз';
+                downBtn.addEventListener('click', () => moveTask(block.id, index, 1));
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'delete-task-btn';
+                delBtn.textContent = '✕';
+                delBtn.addEventListener('click', () => deleteTask(block.id, index));
+
+                actions.appendChild(checkBtn);
+                actions.appendChild(upBtn);
+                actions.appendChild(downBtn);
+                actions.appendChild(delBtn);
+
+                li.appendChild(mainDiv);
+                li.appendChild(endTimeSpan);
+                li.appendChild(actions);
+                taskListEl.appendChild(li);
+            });
+        }
+
+        // ——— полный рендер ———
+        function render() {
+            renderSidebar();
+            renderTasks();
+            saveData();
+        }
+
+        function setActiveBlock(id) {
+            activeBlockId = id;
+            render();
+        }
+
+        function setTab(tab) {
+            if (activeTab === tab) return;
+            activeTab = tab;
+            const list = currentBlocks();
+            if (!list.some(b => b.id === activeBlockId)) {
+                activeBlockId = list.length > 0 ? list[0].id : null;
+            }
+            render();
+        }
+
+        // ——— операции с блоками ———
+        function addBlock() {
+            const title = newBlockInput.value.trim() || 'Новый блок';
+            const today = new Date().toISOString().split('T')[0];
+            const newBlock = { id: generateId(), title, date: today, category: activeTab, tasks: [] };
+            blocks.push(newBlock);
+            newBlockInput.value = '';
+            activeBlockId = newBlock.id;
+            render();
+            newBlockInput.focus();
+        }
+
+        function deleteBlock(id) {
+            if (blocks.length === 1) {
+                if (!confirm('Удалить последний блок?')) return;
+            }
+            blocks = blocks.filter(b => b.id !== id);
+            if (activeBlockId === id) {
+                activeBlockId = blocks.length > 0 ? blocks[0].id : null;
+            }
+            render();
+        }
+
+        function moveBlock(block, direction) {
+            const list = currentBlocks();
+            const idx = list.indexOf(block);
+            const other = list[idx + direction];
+            if (idx < 0 || !other) return;
+            const i = blocks.indexOf(block);
+            const j = blocks.indexOf(other);
+            blocks[i] = other;
+            blocks[j] = block;
+            render();
+        }
+
+        function duplicateBlock(id) {
+            const original = blocks.find(b => b.id === id);
+            if (!original) return;
+
+            const newTasks = (original.tasks || []).map(t => ({
+                id: generateId(),
+                text: t.text,
+                done: t.done,
+                time: t.time || null,
+                duration: t.duration || null
+            }));
+
+            const newBlock = {
+                id: generateId(),
+                title: original.title + ' (копия)',
+                date: original.date || null,
+                tasks: newTasks
+            };
+
+            const index = blocks.findIndex(b => b.id === id);
+            blocks.splice(index + 1, 0, newBlock);
+            activeBlockId = newBlock.id;
+            render();
+        }
+
+        // ——— операции с задачами ———
+        function addTask() {
+            const block = getActiveBlock();
+            if (!block) return;
+            const text = taskInput.value.trim();
+            if (!text) {
+                taskInput.placeholder = 'напиши задачу ✍️';
+                taskInput.style.borderColor = '#c29a85';
+                setTimeout(() => {
+                    taskInput.placeholder = 'новая задача…';
+                    taskInput.style.borderColor = '#ddd0be';
+                }, 1200);
+                return;
+            }
+            if (!block.tasks) block.tasks = [];
+            const time = taskTimeInput.value || null;
+            const duration = parseInt(taskDurationInput.value) || null;
+            block.tasks.push({ id: generateId(), text, done: false, time, duration });
+            if (time) block.tasks = sortTasksByTime(block.tasks);
+            taskInput.value = '';
+            taskDurationInput.value = '';
+            render();
+            taskInput.focus();
+        }
+
+        function deleteTask(blockId, taskIndex) {
+            const block = blocks.find(b => b.id === blockId);
+            if (!block || !block.tasks) return;
+            block.tasks.splice(taskIndex, 1);
+            render();
+        }
+
+        function moveTask(blockId, taskIndex, direction) {
+            const block = blocks.find(b => b.id === blockId);
+            if (!block || !block.tasks) return;
+            const newIndex = taskIndex + direction;
+            if (newIndex < 0 || newIndex >= block.tasks.length) return;
+            const [task] = block.tasks.splice(taskIndex, 1);
+            block.tasks.splice(newIndex, 0, task);
+            render();
+        }
+
+        // ——— сброс галочек в активном блоке ———
+        function resetChecks() {
+            const block = getActiveBlock();
+            if (!block || !block.tasks) return;
+            const doneCount = block.tasks.filter(t => t.done).length;
+            if (!doneCount) return;
+            if (!confirm(`Снять галочки с ${doneCount} выполненных задач?`)) return;
+            block.tasks.forEach(t => { t.done = false; });
+            render();
+        }
+
+        // ——— редактирование названия блока в основной области ———
+        blockTitleEdit.addEventListener('input', () => {
+            const block = getActiveBlock();
+            if (!block) return;
+            block.title = blockTitleEdit.value.trim() || 'Без названия';
+            saveData();
+            renderSidebar(); // обновляем сайдбар, чтобы показать новое имя
+        });
+
+        // ——— инициализация ———
+        function init() {
+            loadData();
+            const initial = currentBlocks();
+            if (initial.length > 0) activeBlockId = initial[0].id;
+            render();
+
+            tabButtons.forEach(btn => {
+                btn.addEventListener('click', () => setTab(btn.dataset.tab));
+            });
+
+            addBlockBtn.addEventListener('click', addBlock);
+            newBlockInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addBlock();
+                }
+            });
+
+            addTaskBtn.addEventListener('click', addTask);
+            resetChecksBtn.addEventListener('click', resetChecks);
+            taskInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addTask();
+                }
+            });
+
+            window.addEventListener('beforeunload', saveData);
+        }
+
+        init();
+    })();
+</script>
+</body>
+</html>
